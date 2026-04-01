@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jazzito Records</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --bg: #ffffff;
+        --border: #e9e2d8;
+        --active-bg: #f6f1ea;
+        --active-border: #ddd1c2;
+        --text: #222222;
+        --muted: #a8a099;
+        --cream: #f3ede4;
+        --cream-dark: #d7cbbb;
+    }
+
+    html, body {
+        width: 100%;
+        height: 100%;
+    }
+
+    body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        padding: 24px;
+    }
+
+    .container {
+        display: flex;
+        border-radius: 28px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow:
+            0 20px 50px rgba(0,0,0,0.08),
+            0 4px 14px rgba(0,0,0,0.04);
+    }
+
+    .sidebar {
+        width: 260px;
+        padding: 40px 24px;
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: #fff;
+    }
+
+    .title {
+        font-size: 12px;
+        letter-spacing: 0.28em;
+        color: var(--muted);
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .artist {
+        padding: 14px 18px;
+        margin-bottom: 10px;
+        border-radius: 16px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--text);
+        font-size: 18px;
+        text-align: left;
+        cursor: pointer;
+        transition:
+            transform 0.25s ease,
+            background 0.25s ease,
+            border-color 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    .artist:hover {
+        transform: translateX(6px);
+        background: #fbf8f3;
+    }
+
+    .artist.active {
+        background: var(--active-bg);
+        border-color: var(--active-border);
+        transform: translateX(10px);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.85),
+            0 8px 18px rgba(0,0,0,0.04);
+    }
+
+    .video-box {
+        width: 500px;
+        height: 500px;
+        position: relative;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 30% 30%, #f7f3ed 0%, #f3eee6 40%, #ece6dc 100%);
+    }
+
+    video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        opacity: 1;
+        transform: translateX(0) scale(1.01);
+        transition:
+            opacity 0.45s ease,
+            transform 0.45s ease,
+            filter 0.45s ease;
+        background: #f4f4f4;
+    }
+
+    .video-box.is-switching video {
+        opacity: 0;
+        transform: translateX(20px) scale(1.03);
+        filter: blur(4px);
+    }
+
+    .overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.62);
+        backdrop-filter: blur(10px);
+        transition:
+            opacity 0.7s ease,
+            visibility 0.7s ease,
+            backdrop-filter 0.7s ease;
+        z-index: 3;
+    }
+
+    .overlay.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        backdrop-filter: blur(0px);
+    }
+
+    .logo-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        padding: 28px 36px;
+        box-shadow:
+            0 16px 40px rgba(0,0,0,0.08),
+            inset 0 1px 0 rgba(255,255,255,0.85);
+        animation: logoFloat 4.6s ease-in-out infinite;
+    }
+
+    .logo-kicker {
+        font-size: 11px;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: #9f9488;
+        font-weight: 600;
+    }
+
+    .logo {
+        font-size: 34px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #2b2621;
+        font-weight: 600;
+        line-height: 1;
+        text-align: center;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+    }
+
+    .logo-sub {
+        font-size: 13px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #7e7469;
+        text-align: center;
+    }
+
+    .logo-wrap.exit {
+        animation: logoExit 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes logoFloat {
+        0%, 100% {
+            transform: translateY(0px) scale(1);
+            box-shadow:
+                0 16px 40px rgba(0,0,0,0.08),
+                inset 0 1px 0 rgba(255,255,255,0.85);
+        }
+        50% {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow:
+                0 22px 48px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+    }
+
+    @keyframes logoExit {
+        0% {
+            opacity: 1;
+            filter: blur(0px);
+            transform: scale(1);
+        }
+        100% {
+            opacity: 0;
+            filter: blur(10px);
+            transform: scale(1.06);
+        }
+    }
+
+    .preload-indicator {
+        position: absolute;
+        right: 14px;
+        bottom: 14px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.86);
+        border: 1px solid rgba(215,203,187,0.7);
+        color: #766c62;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        z-index: 4;
+        backdrop-filter: blur(8px);
+        transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .preload-indicator.done {
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+    }
+
+    @media (max-width: 860px) {
+        .container {
+            flex-direction: column;
+            width: min(100%, 560px);
+        }
+
+        .sidebar {
+            width: 100%;
+            border-right: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .video-box {
+            width: 100%;
+            height: min(500px, 78vw);
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="sidebar">
+        <div class="title">ARTISTS</div>
+
+        <button class="artist" data-artist="adach">Adach</button>
+        <button class="artist" data-artist="tommy">Young Tommy</button>
+        <button class="artist" data-artist="pwk">PWK</button>
+        <button class="artist" data-artist="jimmy">Heavy Jimmy</button>
+    </div>
+
+    <div class="video-box" id="videoBox">
+        <video id="video" muted playsinline preload="auto">
+            <source src="adach.mp4" type="video/mp4">
+            Twoja przeglądarka nie obsługuje wideo.
+        </video>
+
+        <div class="overlay" id="overlay">
+            <div class="logo-wrap" id="logoWrap">
+                <div class="logo-kicker">Independent Label</div>
+                <div class="logo">Jazzito Records</div>
+                <div class="logo-sub">Select an artist to begin</div>
+            </div>
+        </div>
+
+        <div class="preload-indicator" id="preloadIndicator">Loading media...</div>
+    </div>
+</div>
+
+<script>
+    const video = document.getElementById("video");
+    const videoBox = document.getElementById("videoBox");
+    const overlay = document.getElementById("overlay");
+    const logoWrap = document.getElementById("logoWrap");
+    const preloadIndicator = document.getElementById("preloadIndicator");
+    const buttons = document.querySelectorAll(".artist");
+
+    const videos = {
+        adach: "adach.mp4",
+        tommy: "tommy.mp4",
+        pwk: "pwk.mp4",
+        jimmy: "jimmy.mp4"
+    };
+
+    let current = null;
+    let isSwitching = false;
+    let introDismissed = false;
+
+    function setActiveArtist(next) {
+        buttons.forEach(btn => btn.classList.remove("active"));
+        const activeBtn = document.querySelector(`[data-artist="${next}"]`);
+        if (activeBtn) activeBtn.classList.add("active");
+    }
+
+    function stopOnLastFrame() {
+        if (!Number.isFinite(video.duration)) return;
+        video.currentTime = Math.max(0, video.duration - 0.04);
+        video.pause();
+    }
+
+    function dismissIntro() {
+        if (introDismissed) return Promise.resolve();
+
+        introDismissed = true;
+        logoWrap.classList.add("exit");
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                overlay.classList.add("hidden");
+                resolve();
+            }, 760);
+        });
+    }
+
+    function preloadAllVideos() {
+        const entries = Object.entries(videos);
+        let loaded = 0;
+
+        if (!entries.length) {
+            preloadIndicator.classList.add("done");
+            return;
+        }
+
+        entries.forEach(([key, src]) => {
+            const tempVideo = document.createElement("video");
+            tempVideo.preload = "auto";
+            tempVideo.muted = true;
+            tempVideo.playsInline = true;
+            tempVideo.src = src;
+
+            const markLoaded = () => {
+                loaded += 1;
+                if (loaded >= entries.length) {
+                    preloadIndicator.textContent = "Media ready";
+                    setTimeout(() => {
+                        preloadIndicator.classList.add("done");
+                    }, 450);
+                } else {
+                    preloadIndicator.textContent = `Loading media... ${loaded}/${entries.length}`;
+                }
+            };
+
+            tempVideo.addEventListener("loadeddata", markLoaded, { once: true });
+            tempVideo.addEventListener("error", markLoaded, { once: true });
+            tempVideo.load();
+        });
+    }
+
+    async function switchVideo(next) {
+        if (isSwitching || (current && next === current)) return;
+        if (!videos[next]) return;
+
+        isSwitching = true;
+        current = next;
+        setActiveArtist(next);
+
+        await dismissIntro();
+
+        video.pause();
+        videoBox.classList.add("is-switching");
+
+        await new Promise(resolve => setTimeout(resolve, 280));
+
+        video.src = videos[next];
+        video.load();
+
+        const handleLoaded = async () => {
+            videoBox.classList.remove("is-switching");
+
+            try {
+                await video.play();
+            } catch (e) {
+                console.warn("Nie udało się odtworzyć filmu:", e);
+            }
+
+            isSwitching = false;
+        };
+
+        const handleError = () => {
+            console.warn("Nie udało się wczytać pliku:", videos[next]);
+            videoBox.classList.remove("is-switching");
+            isSwitching = false;
+        };
+
+        video.onloadeddata = handleLoaded;
+        video.onerror = handleError;
+    }
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            switchVideo(btn.dataset.artist);
+        });
+    });
+
+    video.addEventListener("ended", () => {
+        stopOnLastFrame();
+    });
+
+    window.addEventListener("load", () => {
+        preloadAllVideos();
+    });
+</script>
+
+</body>
+</html>
