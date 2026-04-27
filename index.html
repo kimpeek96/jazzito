@@ -7,528 +7,11 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-
-html,body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#050505;
-    color:white;
-    font-family:'Inter',sans-serif;
-}
-
-body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    z-index:100;
-    opacity:.05;
-    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-.scene{
-    position:fixed;
-    inset:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:5vw;
-    opacity:0;
-    pointer-events:none;
-    transform:scale(1.04);
-    filter:blur(12px);
-    transition:.8s ease;
-}
-
-.scene.active{
-    opacity:1;
-    pointer-events:auto;
-    transform:scale(1);
-    filter:blur(0);
-}
-
-.scene::before{
-    content:"";
-    position:absolute;
-    inset:-20%;
-    background:
-        radial-gradient(circle at center, rgba(255,255,255,.04), transparent 30%),
-        linear-gradient(120deg, transparent, rgba(255,255,255,.02), transparent);
-    animation:bgMove 12s infinite alternate ease-in-out;
-}
-
-@keyframes bgMove{
-    from{transform:translateX(-5%) rotate(-3deg)}
-    to{transform:translateX(5%) rotate(3deg)}
-}
-
-.frame{
-    width:min(92vw,1300px);
-    height:min(80vh,760px);
-    border:1px solid rgba(255,255,255,.14);
-    position:relative;
-    overflow:hidden;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.frame::before{
-    content:"";
-    position:absolute;
-    width:1px;
-    height:100%;
-    left:50%;
-    background:rgba(255,255,255,.05);
-    z-index:4;
-}
-
-.frame::after{
-    content:"";
-    position:absolute;
-    width:100%;
-    height:1px;
-    top:50%;
-    background:rgba(255,255,255,.05);
-    z-index:4;
-}
-
-.scan{
-    position:absolute;
-    width:100%;
-    height:80px;
-    background:linear-gradient(to bottom, transparent, rgba(255,255,255,.08), transparent);
-    animation:scanMove 6s linear infinite;
-    mix-blend-mode:difference;
-    z-index:5;
-}
-
-@keyframes scanMove{
-    from{top:-100px}
-    to{top:100%}
-}
-
-.content{
-    position:relative;
-    z-index:10;
-    text-align:center;
-    padding:20px;
-}
-
-.logo{
-    font-family:'Archivo Black',sans-serif;
-    font-size:clamp(60px,10vw,180px);
-    line-height:.8;
-    letter-spacing:-0.08em;
-    text-transform:uppercase;
-}
-
-.logo span{display:block}
-
-.big-text{
-    font-family:'Archivo Black',sans-serif;
-    font-size:clamp(50px,8vw,140px);
-    line-height:.85;
-    text-transform:uppercase;
-    letter-spacing:-0.07em;
-}
-
-.kicker{
-    position:absolute;
-    top:25px;
-    right:25px;
-    z-index:20;
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:.2em;
-    color:rgba(255,255,255,.5);
-}
-
-.meta{
-    position:absolute;
-    bottom:25px;
-    left:25px;
-    z-index:20;
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:.2em;
-    color:rgba(255,255,255,.5);
-}
-
-.artist-video{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    opacity:0;
-    z-index:1;
-    transition:.5s ease;
-    filter:grayscale(1) contrast(1.2) brightness(.4);
-}
-
-.artist-video.active{opacity:1}
-
-.artist-overlay{
-    position:absolute;
-    inset:0;
-    z-index:2;
-    background:linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,.75));
-}
-
-.artist-content{
-    width:100%;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    align-items:flex-start;
-    padding:50px;
-}
-
-.artist-heading{
-    position:relative;
-    z-index:10;
-    text-align:left;
-}
-
-.artist-heading h2{
-    font-family:'Archivo Black',sans-serif;
-    font-size:clamp(50px,6vw,120px);
-    line-height:.85;
-    text-transform:uppercase;
-    letter-spacing:-0.06em;
-}
-
-.artist-heading h3{
-    font-size:clamp(16px,2vw,28px);
-    letter-spacing:.35em;
-    text-transform:uppercase;
-    font-weight:300;
-    color:rgba(255,255,255,.7);
-    margin-top:10px;
-}
-
-.artist-grid{
-    width:100%;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:14px;
-    z-index:10;
-    position:relative;
-}
-
-.artist-card{
-    min-height:90px;
-    border:1px solid rgba(255,255,255,.14);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    cursor:pointer;
-    background:rgba(255,255,255,.03);
-    backdrop-filter:blur(10px);
-    transition:.3s ease;
-    position:relative;
-    overflow:hidden;
-}
-
-.artist-card::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:white;
-    transform:scaleX(0);
-    transform-origin:left;
-    transition:.3s ease;
-    z-index:-1;
-}
-
-.artist-card:hover::before,
-.artist-card.active::before{
-    transform:scaleX(1);
-}
-
-.artist-card:hover,
-.artist-card.active{
-    color:black;
-    transform:translateY(-5px);
-    border-color:white;
-}
-
-.artist-card span{
-    font-family:'Archivo Black',sans-serif;
-    text-transform:uppercase;
-    font-size:clamp(12px,1.3vw,18px);
-}
-
-.mobile-artist-nav{display:none}
-
-.artist-nav-btn{
-    width:44px;
-    height:44px;
-    border:1px solid rgba(255,255,255,.3);
-    background:rgba(0,0,0,.35);
-    color:white;
-    backdrop-filter:blur(12px);
-    font-size:20px;
-    cursor:pointer;
-}
-
-.artist-nav-btn:active{
-    background:white;
-    color:black;
-}
-
-.small-list{
-    list-style:none;
-    margin-top:25px;
-    text-transform:uppercase;
-    font-size:12px;
-    letter-spacing:.18em;
-    color:rgba(255,255,255,.7);
-}
-
-.small-list li{margin:10px 0}
-
-.dots{
-    position:fixed;
-    left:30px;
-    top:50%;
-    transform:translateY(-50%);
-    z-index:200;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-
-.dot{
-    width:6px;
-    height:6px;
-    border-radius:50%;
-    background:rgba(255,255,255,.3);
-    transition:.3s;
-}
-
-.dot.active{
-    height:28px;
-    border-radius:999px;
-    background:white;
-}
-
-.counter{
-    position:fixed;
-    right:30px;
-    bottom:25px;
-    z-index:200;
-    font-size:11px;
-    letter-spacing:.2em;
-    color:rgba(255,255,255,.5);
-}
-
-@media(max-width:900px){
-    .frame{
-        width:94vw;
-        height:82vh;
-    }
-
-    .artist-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .big-text{
-        font-size:clamp(42px,9vw,80px);
-    }
-}
-
-@media(max-width:768px){
-    html,body{
-        overflow:hidden;
-        touch-action:pan-y;
-    }
-
-    .scene{padding:0}
-
-    .frame{
-        width:100vw;
-        height:100vh;
-        border:none;
-    }
-
-    .frame::before,
-    .frame::after{
-        display:none;
-    }
-
-    .scan{opacity:.4}
-
-    .logo{
-        font-size:clamp(42px,14vw,80px);
-        line-height:.85;
-        padding:20px;
-    }
-
-    .big-text{
-        font-size:clamp(34px,11vw,72px);
-        line-height:.9;
-    }
-
-    .content{padding:20px}
-
-    .kicker{
-        top:18px;
-        right:18px;
-        font-size:10px;
-    }
-
-    .meta{
-        bottom:18px;
-        left:18px;
-        font-size:10px;
-    }
-
-    .counter{
-        right:18px;
-        bottom:18px;
-        font-size:10px;
-    }
-
-    .dots{
-        left:14px;
-        gap:8px;
-    }
-
-    .dot{
-        width:5px;
-        height:5px;
-    }
-
-    .dot.active{height:20px}
-
-    .artist-content{
-        width:100%;
-        height:100%;
-        padding:20px;
-        position:relative;
-        justify-content:flex-start;
-        align-items:flex-start;
-    }
-
-    .artist-heading{
-        position:absolute;
-        top:30px;
-        left:20px;
-        z-index:20;
-    }
-
-    .artist-heading h2{
-        font-size:clamp(38px,12vw,70px);
-    }
-
-    .artist-heading h3{
-        font-size:12px;
-        letter-spacing:.25em;
-    }
-
-    .artist-grid{
-        position:absolute;
-        bottom:40px;
-        left:0;
-        width:100%;
-        display:flex;
-        overflow-x:auto;
-        overflow-y:hidden;
-        gap:12px;
-        padding:0 20px;
-        scroll-snap-type:x mandatory;
-        z-index:20;
-        -webkit-overflow-scrolling:touch;
-    }
-
-    .artist-grid::-webkit-scrollbar{display:none}
-
-    .artist-card{
-        min-width:220px;
-        height:70px;
-        min-height:70px;
-        flex-shrink:0;
-        scroll-snap-align:center;
-        backdrop-filter:blur(12px);
-    }
-
-    .artist-card span{font-size:15px}
-
-    .mobile-artist-nav{
-        position:absolute;
-        left:0;
-        right:0;
-        bottom:115px;
-        width:100%;
-        display:flex;
-        justify-content:space-between;
-        padding:0 20px;
-        z-index:30;
-        pointer-events:none;
-    }
-
-    .small-list{
-        font-size:11px;
-        letter-spacing:.14em;
-    }
-
-    .artist-video{
-        filter:grayscale(1) contrast(1.25) brightness(.55);
-    }
-
-    .artist-nav-btn{
-    width:44px;
-    height:44px;
-    border:1px solid rgba(255,255,255,.3);
-    background:rgba(0,0,0,.35);
-    color:white;
-    backdrop-filter:blur(12px);
-    font-size:20px;
-    cursor:pointer;
-    border-radius:50%;
-    pointer-events:auto;
-    transition:.25s ease;
-}
-
-.artist-nav-btn:active{
-    background:white;
-    color:black;
-    transform:scale(.95);
-}
-}
-
-@media(max-width:420px){
-    .logo{font-size:38px}
-
-    .big-text{font-size:30px}
-
-    .artist-card{
-        min-width:180px;
-        height:60px;
-        min-height:60px;
-    }
-
-    .artist-heading h2{font-size:34px}
-
-    .artist-grid{bottom:25px}
-
-    .mobile-artist-nav{
-        bottom:95px;
-        right:16px;
-    }
-
-    .mobile-artist-nav{
-        bottom:85px;
-        padding:0 14px;
-    }
-}
-</style>
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/scenes.css">
+<link rel="stylesheet" href="css/artists.css">
+<link rel="stylesheet" href="css/responsive.css">
 </head>
 
 <body>
@@ -539,13 +22,16 @@ body::after{
 <section class="scene active">
     <div class="frame">
         <div class="scan"></div>
+
         <div class="kicker">Independent Label</div>
+
         <div class="content">
             <h1 class="logo">
                 <span>Jazzito</span>
                 <span>Records</span>
             </h1>
         </div>
+
         <div class="meta">Est. 2026</div>
     </div>
 </section>
@@ -553,6 +39,7 @@ body::after{
 <section class="scene">
     <div class="frame">
         <div class="kicker">Manifest</div>
+
         <div class="content">
             <div class="big-text">
                 No Radio<br>
@@ -560,6 +47,7 @@ body::after{
                 No Mercy
             </div>
         </div>
+
         <div class="meta">Scene 02</div>
     </div>
 </section>
@@ -576,28 +64,54 @@ body::after{
         ></video>
 
         <div class="artist-overlay"></div>
+
         <div class="kicker">Artists</div>
 
         <div class="content artist-content">
             <div class="artist-heading">
-                <h2>Jazzito</h2>
-                <h3>Roster</h3>
+                <h2 id="artistSceneTitle">Jazzito</h2>
+                <h3 id="artistSceneSubtitle">.Artists / Creators</h3>
+            </div>
+
+            <div class="artist-detail" id="artistDetail" aria-live="polite">
+                <div class="artist-detail-panel active" id="artistBioPanel">
+                    <div class="artist-detail-label">Bio</div>
+                    <p id="artistBioText"></p>
+                </div>
+
+                <div class="artist-detail-panel" id="artistMusicPanel">
+                    <div class="artist-detail-label">Music</div>
+                    <ul class="artist-detail-list" id="artistMusicList"></ul>
+                </div>
+
+                <div class="artist-detail-panel" id="artistSocialPanel">
+                    <div class="artist-detail-label">Social</div>
+                    <ul class="artist-detail-list" id="artistSocialList"></ul>
+                </div>
+
             </div>
 
             <div class="artist-grid" id="artistGrid">
-                <div class="artist-card" data-video="videos/adach.mp4"><span>Adach</span></div>
-                <div class="artist-card" data-video="videos/young-tommy.mp4"><span>Young Tommy</span></div>
-                <div class="artist-card" data-video="videos/pwk.mp4"><span>PWK</span></div>
-                <div class="artist-card" data-video="videos/heavy-jimmy.mp4"><span>Heavy Jimmy</span></div>
-                <div class="artist-card" data-video="videos/l3wy.mp4"><span>L3WY</span></div>
-                <div class="artist-card" data-video="videos/green-rob.mp4"><span>Green Rob</span></div>
-                <div class="artist-card" data-video="videos/pretty-rooster.mp4"><span>Pretty Rooster</span></div>
-                <div class="artist-card" data-video="videos/bad-hardie.mp4"><span>Bad Hardie</span></div>
+                <div class="artist-card" data-artist="adach" data-video="videos/adach.mp4"><span>Adach</span></div>
+                <div class="artist-card" data-artist="youngTommy" data-video="videos/young-tommy.mp4"><span>Young Tommy</span></div>
+                <div class="artist-card" data-artist="pwk" data-video="videos/pwk.mp4"><span>PWK</span></div>
+                <div class="artist-card" data-artist="heavyJimmy" data-video="videos/heavy-jimmy.mp4"><span>Heavy Jimmy</span></div>
+                <div class="artist-card" data-artist="l3wy" data-video="videos/l3wy.mp4"><span>L3WY</span></div>
+                <div class="artist-card" data-artist="greenRob" data-video="videos/green-rob.mp4"><span>Green Rob</span></div>
+                <div class="artist-card" data-artist="prettyRooster" data-video="videos/pretty-rooster.mp4"><span>Pretty Rooster</span></div>
+                <div class="artist-card" data-artist="badHardie" data-video="videos/bad-hardie.mp4"><span>Bad Hardie</span></div>
+            </div>
+
+            <div class="artist-detail-actions" aria-label="Artist details menu">
+                <button class="artist-detail-btn active" id="showBio" type="button">Bio</button>
+                <button class="artist-detail-btn" id="showMusic" type="button">Music</button>
+                <button class="artist-detail-btn" id="showSocial" type="button">Social</button>
+                <button class="artist-detail-btn artist-back-btn" id="backArtist" type="button">Back</button>
             </div>
 
             <div class="mobile-artist-nav">
-                <button class="artist-nav-btn" id="prevArtist" type="button">←</button>
-                <button class="artist-nav-btn" id="nextArtist" type="button">→</button>
+                <button class="artist-nav-btn" id="prevArtist" type="button" aria-label="Poprzedni artysta">←</button>
+                <button class="artist-nav-btn" id="nextArtist" type="button" aria-label="Następny artysta">→</button>
             </div>
         </div>
 
@@ -606,19 +120,25 @@ body::after{
 </section>
 
 <section class="scene">
-    <div class="frame">
+    <div class="frame release-frame">
         <div class="kicker">Release</div>
-        <div class="content">
-            <div class="big-text">
-                Epiphyllum<br>
-                Oxypetalum
+
+        <div class="content release-content">
+            <div class="release-slider" aria-label="Podgląd zestawu EP">
+                <img class="release-slide active" src="assets/adach-epki.png" alt="Jazzito Records — zestaw x3 EP">
+                <img class="release-slide" src="assets/adach-ep2.png" alt="Adach Xanthoderme Agenensis EP — okładka">
+                <img class="release-slide" src="assets/adach-ep1.png" alt="Adach Xanthoderme Agenensis EP — okładka">
+                <img class="release-slide" src="assets/adach-ep3.png" alt="Adach Epiphyllum Oxypetalum EP — okładka">
             </div>
-            <ul class="small-list">
-                <li>Adach</li>
-                <li>EP 2026</li>
-                <li>Jazzito Records</li>
-            </ul>
+
+            <div class="release-info">
+                <div class="release-eyebrow">Adach / Limited Drop</div>
+                <h2 class="release-title">Zamów<br>zestaw x3 EP</h2>
+                <p class="release-description">Pakiet kolekcjonerski Jazzito Records: trzy wydania EP, ciemna estetyka, niezależny nakład i bez zbędnego miziania algorytmów.</p>
+                <a class="release-button" href="order.html">Przejdź do zamówienia</a>
+            </div>
         </div>
+
         <div class="meta">Scene 04</div>
     </div>
 </section>
@@ -626,8 +146,10 @@ body::after{
 <section class="scene">
     <div class="frame">
         <div class="kicker">Contact</div>
+
         <div class="content">
             <div class="big-text">Contact</div>
+
             <ul class="small-list">
                 <li>contact@jazzitorecords.pl</li>
                 <li>instagram</li>
@@ -635,190 +157,14 @@ body::after{
                 <li>spotify</li>
             </ul>
         </div>
+
         <div class="meta">Scene 05</div>
     </div>
 </section>
 
-<script>
-const scenes = document.querySelectorAll(".scene");
-const dotsContainer = document.getElementById("dots");
-const counter = document.getElementById("counter");
-
-let currentScene = 0;
-let locked = false;
-
-scenes.forEach((scene,index)=>{
-    const dot=document.createElement("div");
-    dot.classList.add("dot");
-
-    if(index===0){
-        dot.classList.add("active");
-    }
-
-    dot.addEventListener("click",()=>{
-        currentScene=index;
-        updateScene();
-    });
-
-    dotsContainer.appendChild(dot);
-});
-
-const dots=document.querySelectorAll(".dot");
-
-function updateScene(){
-    scenes.forEach((scene,index)=>{
-        scene.classList.toggle("active",index===currentScene);
-    });
-
-    dots.forEach((dot,index)=>{
-        dot.classList.toggle("active",index===currentScene);
-    });
-
-    counter.textContent=
-        String(currentScene+1).padStart(2,"0") +
-        " / " +
-        String(scenes.length).padStart(2,"0");
-}
-
-function nextScene(){
-    if(currentScene < scenes.length-1){
-        currentScene++;
-        updateScene();
-    }
-}
-
-function prevScene(){
-    if(currentScene > 0){
-        currentScene--;
-        updateScene();
-    }
-}
-
-window.addEventListener("wheel",(e)=>{
-    if(locked) return;
-
-    locked=true;
-
-    if(e.deltaY>0){
-        nextScene();
-    }else{
-        prevScene();
-    }
-
-    setTimeout(()=>{
-        locked=false;
-    },800);
-});
-
-window.addEventListener("keydown",(e)=>{
-    if(e.key==="ArrowDown") nextScene();
-    if(e.key==="ArrowUp") prevScene();
-});
-
-let startY=0;
-
-window.addEventListener("touchstart",(e)=>{
-    startY=e.touches[0].clientY;
-});
-
-window.addEventListener("touchend",(e)=>{
-    let endY=e.changedTouches[0].clientY;
-    let diff=startY-endY;
-
-    if(Math.abs(diff)<50) return;
-
-    if(diff>0){
-        nextScene();
-    }else{
-        prevScene();
-    }
-});
-
-const artistCards=document.querySelectorAll(".artist-card");
-const artistVideo=document.getElementById("artistVideo");
-const artistFrame=document.getElementById("artistFrame");
-const prevArtist=document.getElementById("prevArtist");
-const nextArtist=document.getElementById("nextArtist");
-
-let activeArtistIndex=0;
-
-function playArtistVideo(videoSrc){
-    if(!artistVideo.src.includes(videoSrc)){
-        artistVideo.src=videoSrc;
-        artistVideo.load();
-
-        artistVideo.onloadedmetadata=()=>{
-            artistVideo.currentTime=0;
-            artistVideo.play().catch(()=>{
-                console.log("autoplay blocked");
-            });
-        };
-    }else{
-        artistVideo.currentTime=0;
-        artistVideo.play().catch(()=>{});
-    }
-
-    artistVideo.classList.add("active");
-}
-
-function setActiveArtist(index){
-    if(index < 0) index = artistCards.length - 1;
-    if(index >= artistCards.length) index = 0;
-
-    activeArtistIndex = index;
-
-    artistCards.forEach(card=>{
-        card.classList.remove("active");
-    });
-
-    const activeCard = artistCards[activeArtistIndex];
-    activeCard.classList.add("active");
-
-    playArtistVideo(activeCard.dataset.video);
-
-    activeCard.scrollIntoView({
-        behavior:"smooth",
-        inline:"center",
-        block:"nearest"
-    });
-}
-
-artistCards.forEach((card,index)=>{
-    card.addEventListener("mouseenter",()=>{
-        if(window.innerWidth > 768){
-            setActiveArtist(index);
-        }
-    });
-
-    card.addEventListener("click",()=>{
-        setActiveArtist(index);
-    });
-});
-
-prevArtist.addEventListener("click",()=>{
-    setActiveArtist(activeArtistIndex - 1);
-});
-
-nextArtist.addEventListener("click",()=>{
-    setActiveArtist(activeArtistIndex + 1);
-});
-
-artistFrame.addEventListener("mouseleave",()=>{
-    if(window.innerWidth > 768){
-        artistCards.forEach(card=>{
-            card.classList.remove("active");
-        });
-    }
-});
-
-artistVideo.addEventListener("ended",()=>{
-    artistVideo.pause();
-
-    if(Number.isFinite(artistVideo.duration)){
-        artistVideo.currentTime = Math.max(0, artistVideo.duration - 0.05);
-    }
-});
-</script>
-
+<script src="js/scenes.js"></script>
+<script src="js/artists.js"></script>
+<script src="js/release-slider.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

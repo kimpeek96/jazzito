@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zamów zestaw x3 EP — Jazzito Records</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/order.css">
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="order-header">
+    <a class="brand" href="index.html" aria-label="Powrót do strony głównej Jazzito Records">
+        <span>Jazzito</span>
+        <span>Records</span>
+    </a>
+
+    <nav class="order-nav" aria-label="Nawigacja zamówienia">
+        <a href="index.html">Back to site</a>
+        <a href="#orderForm">Order</a>
+    </nav>
+</header>
+
+<main class="order-page">
+    <section class="order-hero" aria-label="Zamówienie zestawu EP">
+        <div class="order-gallery" aria-label="Galeria zestawu EP">
+            <div class="order-slider" id="orderSlider">
+                <img class="order-slide active" src="assets/adach-epki.png" alt="Jazzito Records — zestaw x3 EP">
+                <img class="order-slide" src="assets/adach-ep2.png" alt="Adach Xanthoderme Agenensis EP — okładka">
+                <img class="order-slide" src="assets/adach-ep1.png" alt="Adach - Galanthus Nivalis EP — okładka">
+                <img class="order-slide" src="assets/adach-ep3.png" alt="Adach Epiphyllum Oxypetalum EP — okładka">
+            </div>
+
+            <div class="order-slider-controls" aria-label="Sterowanie galerią">
+                <button class="slider-btn" id="prevSlide" type="button" aria-label="Poprzednie zdjęcie">←</button>
+                <div class="slider-dots" id="sliderDots" aria-label="Wybór zdjęcia"></div>
+                <button class="slider-btn" id="nextSlide" type="button" aria-label="Następne zdjęcie">→</button>
+            </div>
+        </div>
+
+        <div class="order-summary">
+            <div class="eyebrow">Limited drop / Jazzito Records</div>
+            <h1>Zamów<br>zestaw x3 EP</h1>
+            <p class="lead">Pakiet kolekcjonerski Adach / Jazzito Records. Formularz przygotowany jako front zamówienia — po wysłaniu generuje gotową wiadomość mailową.</p>
+
+            <div class="product-card">
+                <div>
+                    <span class="product-label">Produkt</span>
+                    <strong>Adach — zestaw x3 EP</strong>
+                </div>
+                <div>
+                    <span class="product-label">Cena</span>
+                    <strong>99 PLN</strong>
+                </div>
+            </div>
+
+            <ul class="order-list">
+                <li>Epiphyllum Oxypetalum EP 2026</li>
+                <li>Xanthoderme Agenensis EP 2021</li>
+                <li>Galanthus Nivalis EP 2020</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="form-section" id="orderForm" aria-label="Formularz zamówienia">
+        <div class="form-heading">
+            <div class="eyebrow">Order form</div>
+            <h2>Dane do zamówienia</h2>
+            <p>Na razie bez płatności online. Formularz otwiera gotowego maila z danymi zamówienia. To najprostsza wersja bez backendu.</p>
+        </div>
+
+        <form class="order-form" id="jazzitoOrderForm">
+            <div class="field-grid">
+                <label>
+                    Imię i nazwisko
+                    <input type="text" name="name" autocomplete="name" required>
+                </label>
+
+                <label>
+                    E-mail
+                    <input type="email" name="email" autocomplete="email" required>
+                </label>
+
+                <label>
+                    Telefon
+                    <input type="tel" name="phone" autocomplete="tel">
+                </label>
+
+                <label>
+                    Ilość zestawów
+                    <select name="quantity" required>
+                        <option value="1">1 zestaw</option>
+                        <option value="2">2 zestawy</option>
+                        <option value="3">3 zestawy</option>
+                        <option value="4">4 zestawy</option>
+                        <option value="5">5 zestawów</option>
+                    </select>
+                </label>
+            </div>
+
+            <label>
+                Adres dostawy
+                <textarea name="address" rows="4" placeholder="Ulica, numer, kod pocztowy, miasto" required></textarea>
+            </label>
+
+            <label>
+                Uwagi do zamówienia
+                <textarea name="notes" rows="3" placeholder="Np. odbiór osobisty, dedykacja, preferowana forma kontaktu"></textarea>
+            </label>
+
+            <div class="order-total">
+                <span>Szacunkowo razem</span>
+                <strong id="totalPrice">99 PLN</strong>
+            </div>
+
+            <button class="submit-btn" type="submit">Wyślij zamówienie</button>
+            <p class="form-note">Po kliknięciu otworzy się program pocztowy z gotową treścią wiadomości. Adres odbiorcy możesz zmienić w pliku <code>js/order.js</code>.</p>
+        </form>
+    </section>
+</main>
+
+<script src="js/order.js"></script>
+</body>
+</html>
